@@ -5,6 +5,7 @@ import no.digdir.accessrequestapi.model.ShoppingCart
 import org.slf4j.Logger
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder
 import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
+import org.springframework.http.MediaType
 import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.RestClient
@@ -28,9 +29,9 @@ class KudafClient(restClientBuilder: RestClient.Builder, private val kudafProper
     fun getRedirectUrl(cart: ShoppingCart): String? {
         logger.info("Fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi}")
 
-        return restClient
-            .post()
+        return restClient.post()
             .uri("/cart")
+            .accept(MediaType.APPLICATION_JSON)
             .retrieve()
             .onStatus({ status -> status.isError }) { _, response ->
                 logger.error("Error fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi} (${response.statusCode})")
