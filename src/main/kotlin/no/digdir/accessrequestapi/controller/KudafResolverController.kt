@@ -2,15 +2,13 @@ package no.digdir.accessrequestapi.controller
 
 import io.swagger.v3.oas.annotations.tags.Tag
 import no.digdir.accessrequestapi.client.FdkClient
-import no.digdir.accessrequestapi.configuration.FdkUrls
+import no.digdir.accessrequestapi.configuration.FdkProperties
 import no.digdir.accessrequestapi.model.DataResourceMetadata
 import no.digdir.accessrequestapi.model.DatasetLanguage
 import no.digdir.accessrequestapi.model.ShoppingCart
 import org.slf4j.Logger
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.reactive.function.client.WebClientResponseException
 import java.util.*
 
 @Tag(name = "DataDef resolver")
@@ -18,15 +16,9 @@ import java.util.*
 @RequestMapping(value = ["/datadef-resolver"], produces = ["application/json"])
 class KudafResolverController(
     private val fdkClient: FdkClient,
-    private val fdkUrls: FdkUrls
+    private val fdkProperties: FdkProperties
 ) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
-
-    @ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Resource not found")
-    @ExceptionHandler(WebClientResponseException.NotFound::class)
-    fun handleNotFound(exception: WebClientResponseException) {
-        logger.info("Resource not found", exception)
-    }
 
     @PostMapping("/{language}")
     fun resolveDataDef(
@@ -45,7 +37,7 @@ class KudafResolverController(
             ResolveDataDefResponse(
                 metadata = metadata,
                 language = language,
-                urlToResource = "${fdkUrls.frontend}/$resourceType/$resourceId"
+                urlToResource = "${fdkProperties.frontend}/$resourceType/$resourceId"
             )
         )
     }

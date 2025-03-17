@@ -1,42 +1,43 @@
 package no.digdir.accessrequestapi.client
 
-import no.digdir.accessrequestapi.configuration.FdkUrls
+import no.digdir.accessrequestapi.configuration.FdkProperties
 import no.digdir.accessrequestapi.model.DataResourceMetadata
 import org.slf4j.Logger
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder
+import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
+import org.springframework.http.MediaType
+import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClientResponseException
-import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.util.retry.Retry
+import org.springframework.web.client.RestClient
 import java.time.Duration
 import java.util.*
 
 @Component
-class FdkClient(fdkUrls: FdkUrls) {
+class FdkClient(restClientBuilder: RestClient.Builder, private val fdkProperties: FdkProperties) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
-    private val webClient: WebClient = WebClient.create(fdkUrls.api)
 
-    fun getMetadata(
-        type: String,
-        id: UUID,
-    ): DataResourceMetadata? {
-        logger.info("Fetching metadata for type: $type and id: $id from Felleskatalog.")
+    private val settings: ClientHttpRequestFactorySettings = ClientHttpRequestFactorySettings.defaults()
+        .withReadTimeout(Duration.ofSeconds(fdkProperties.timeout))
 
-        val metadata =
-            webClient
-                .get()
-                .uri("/$type/$id")
-                .retrieve()
-                .bodyToMono<DataResourceMetadata>()
-                .retryWhen(
-                    Retry
-                        .backoff(3, Duration.ofMillis(500))
-                        .filter { throwable -> throwable !is WebClientResponseException.NotFound }
-                        .doBeforeRetry { logger.info("Retrying due to: ${it.failure().message}", it.failure()) },
-                ).block()
+    private val requestFactory: ClientHttpRequestFactory = ClientHttpRequestFactoryBuilder.detect()
+        .build(settings)
 
-        logger.info("Metadata fetched successfully: $metadata")
+    private val restClient = restClientBuilder
+        .baseUrl(fdkProperties.api)
+        .requestFactory(requestFactory)
+        .build()
 
-        return metadata
+    fun getMetadata(type: String, id: UUID): DataResourceMetadata? {
+        logger.info("Fetching metadata for type: $type and id: $id from ${fdkProperties.api}")
+
+        return restClient.get()
+            .uri("/$type/$id")
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .onStatus({ status -> status.isError }) { _, response ->
+                logger.error("Error fetching metadata for type: $type and id: $id from ${fdkProperties.api} (${response.statusCode})")
+            }
+            .toEntity(DataResourceMetadata::class.java)
+            .body
     }
 }
