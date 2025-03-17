@@ -20,7 +20,7 @@ class GlobalErrorHandler {
         return when (exception.statusCode) {
             HttpStatus.INTERNAL_SERVER_ERROR -> ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(exception.message)
             HttpStatus.GATEWAY_TIMEOUT -> ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(exception.message)
-            else -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(exception.message)
+            else -> ResponseEntity.internalServerError().body(exception.message)
         }
     }
 
