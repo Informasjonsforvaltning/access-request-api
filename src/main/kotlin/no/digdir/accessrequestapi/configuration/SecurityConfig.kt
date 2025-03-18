@@ -11,10 +11,10 @@ import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 
 @Configuration
-open class SecurityConfig(private val corsProperties: CorsProperties) {
+class SecurityConfig(private val corsProperties: CorsProperties) {
 
     @Bean
-    open fun filterChain(http: HttpSecurity): SecurityFilterChain {
+    fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http
             .cors { corsConfigurer ->
                 corsConfigurer.configurationSource {
@@ -22,13 +22,13 @@ open class SecurityConfig(private val corsProperties: CorsProperties) {
                         it.allowCredentials = true
                         it.allowedHeaders = listOf("*")
                         it.maxAge = 3600L
-                        it.allowedOriginPatterns = corsProperties.originPatterns.toList()
+                        it.allowedOriginPatterns = corsProperties.originPatterns
                         it.allowedMethods = listOf("GET", "POST", "OPTIONS")
                     }
                 }
             }
             .csrf {
-                it.requireCsrfProtectionMatcher(CsrfRequiredMatcher(corsProperties.originPatterns.toList()))
+                it.requireCsrfProtectionMatcher(CsrfRequiredMatcher(corsProperties.originPatterns))
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             }
             .sessionManagement {

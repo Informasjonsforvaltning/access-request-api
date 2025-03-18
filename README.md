@@ -4,9 +4,9 @@ This API is developed as part of a pilot project for a national application plat
 data or expressing interest in unpublished data. The goal is to simplify and standardize the process for both data
 providers and users, ensuring that valuable data can be shared in a secure and controlled manner.
 
-Users can submit requests directly via data.norge.no or through organizations’ data catalogs. The solution also allows
-users to register interest in data that is not yet ready for sharing. This provides data providers with insights into
-demand and a better basis for assessing whether they should prioritize making these data available.
+Users can submit requests directly via data.norge.no. The solution also allows users to register interest in data that
+is not yet ready for sharing. This provides data providers with insights into demand and a better basis for assessing
+whether they should prioritize making these data available.
 
 ## Getting started
 

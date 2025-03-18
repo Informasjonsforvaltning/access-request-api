@@ -17,12 +17,14 @@ management:
       exposure:
         include: health, info
 
-url:
-  fellesdatakatalog:
-    api: ${RESOURCE_SERVICE_URI}
-    frontend: ${FDK_URI}
-  kudaf:
-    soknadApi: ${KUDAF_FRONTEND_SOKNAD_API:https://frontend-soknad-api-staging.sokrates.edupaas.no/}
+
+fdk:
+  timeout: 5
+  api: ${RESOURCE_SERVICE_URI}
+  frontend: ${FDK_URI}
+kudaf:
+  timeout: 10
+  soknadApi: ${KUDAF_FRONTEND_SOKNAD_API:https://frontend-soknad-api-staging.sokrates.edupaas.no/}
 
 application:
   cors:
@@ -35,9 +37,9 @@ spring:
 logging:
   level.no.digdir.accessrequestapi: DEBUG
 
-url:
-  fellesdatakatalog.api: https://resource.api.staging.fellesdatakatalog.digdir.no
-  fellesdatakatalog.frontend: https://staging.fellesdatakatalog.digdir.no
+fdk:
+  api: https://resource.api.staging.fellesdatakatalog.digdir.no
+  frontend: https://staging.fellesdatakatalog.digdir.no
 
 application:
   cors:
@@ -47,9 +49,8 @@ application:
 spring:
   config.activate.on-profile: test
 
-url:
-  fellesdatakatalog:
-    api: "http://localhost:6000"
-    frontend: "http://localhost:6000"
-  kudaf:
-    soknadApi: "http://localhost:6000"
+fdk:
+  api: "http://localhost:6000"
+  frontend: "http://localhost:6000"
+kudaf:
+  soknadApi: "http://localhost:6000"

@@ -1,35 +1,44 @@
 package no.digdir.accessrequestapi.client
 
-import no.digdir.accessrequestapi.configuration.KudafUrls
+import no.digdir.accessrequestapi.configuration.KudafProperties
 import no.digdir.accessrequestapi.model.ShoppingCart
 import org.slf4j.Logger
+import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder
+import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
+import org.springframework.http.MediaType
+import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
+import org.springframework.web.client.RestClient
+import java.time.Duration
 
 @Component
-class KudafClient(kudafUrls: KudafUrls) {
+class KudafClient(restClientBuilder: RestClient.Builder, private val kudafProperties: KudafProperties) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
-    private val webClient: WebClient = WebClient.create(kudafUrls.soknadApi)
+
+    private val settings: ClientHttpRequestFactorySettings = ClientHttpRequestFactorySettings.defaults()
+        .withReadTimeout(Duration.ofSeconds(kudafProperties.timeout))
+
+    private val requestFactory: ClientHttpRequestFactory = ClientHttpRequestFactoryBuilder.detect()
+        .build(settings)
+
+    private val restClient = restClientBuilder
+        .baseUrl(kudafProperties.soknadApi)
+        .requestFactory(requestFactory)
+        .build()
 
     fun getRedirectUrl(cart: ShoppingCart): String? {
-        logger.info("Fetching redirect URL for cart: $cart")
+        logger.info("Fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi}")
 
-        val redirectUrl =
-            webClient
-                .post()
-                .uri("/cart")
-                .bodyValue(cart)
-                .retrieve()
-                .bodyToMono<KudafAccessRequestResponse>()
-                .block()
-                ?.redirectUrl
-
-        logger.info("Redirect URL: $redirectUrl")
-        return redirectUrl
+        return restClient.post()
+            .uri("/cart")
+            .accept(MediaType.APPLICATION_JSON)
+            .retrieve()
+            .onStatus({ status -> status.isError }) { _, response ->
+                logger.error("Error fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi} (${response.statusCode})")
+            }
+            .body(KudafAccessRequestResponse::class.java)
+            ?.redirectUrl
     }
 }
 
-data class KudafAccessRequestResponse(
-    val redirectUrl: String,
-)
+data class KudafAccessRequestResponse(val redirectUrl: String)

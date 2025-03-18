@@ -2,7 +2,9 @@ package no.digdir.accessrequestapi.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 
-@ConfigurationProperties("url.kudaf")
-data class KudafUrls(
-    val soknadApi: String,
+@ConfigurationProperties("fdk")
+data class FdkProperties(
+    val timeout: Long,
+    val api: String,
+    val frontend: String
 )
