@@ -32,6 +32,7 @@ class KudafClient(restClientBuilder: RestClient.Builder, private val kudafProper
         return restClient.post()
             .uri("/cart")
             .accept(MediaType.APPLICATION_JSON)
+            .body(cart)
             .retrieve()
             .onStatus({ status -> status.isError }) { _, response ->
                 logger.error("Error fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi} (${response.statusCode})")
