@@ -22,13 +22,13 @@ class SecurityConfig(private val corsProperties: CorsProperties) {
                         it.allowCredentials = true
                         it.allowedHeaders = listOf("*")
                         it.maxAge = 3600L
-                        it.allowedOriginPatterns = corsProperties.originPatterns
+                        it.allowedOriginPatterns = corsProperties.getOriginList()
                         it.allowedMethods = listOf("GET", "POST", "OPTIONS")
                     }
                 }
             }
             .csrf {
-                it.requireCsrfProtectionMatcher(CsrfRequiredMatcher(corsProperties.originPatterns))
+                it.requireCsrfProtectionMatcher(CsrfRequiredMatcher(corsProperties.getOriginList()))
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             }
             .sessionManagement {
