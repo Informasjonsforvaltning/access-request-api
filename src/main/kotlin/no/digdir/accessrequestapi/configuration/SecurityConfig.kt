@@ -39,7 +39,20 @@ class SecurityConfig(private val corsProperties: CorsProperties) {
 
     class CsrfRequiredMatcher(private val allowedOrigins: List<String>) : RequestMatcher {
 
+        private val healthCheckPaths = listOf(
+            "/ready", "/ping"
+        )
+
         override fun matches(request: HttpServletRequest): Boolean {
+            val path = request.requestURI
+            val method = request.method
+
+            if (method.equals("GET", ignoreCase = true) &&
+                healthCheckPaths.any { path.startsWith(it) }
+            ) {
+                return false
+            }
+
             val origin = request.getHeader("Origin")
             val referer = request.getHeader("Referer")
 
