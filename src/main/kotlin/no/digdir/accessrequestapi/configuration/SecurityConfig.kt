@@ -1,6 +1,7 @@
 package no.digdir.accessrequestapi.configuration
 
 import jakarta.servlet.http.HttpServletRequest
+import org.slf4j.Logger
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -38,12 +39,15 @@ class SecurityConfig(private val corsProperties: CorsProperties) {
     }
 
     class CsrfRequiredMatcher(private val allowedOrigins: List<String>) : RequestMatcher {
+        private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
         private val healthCheckPaths = listOf(
             "/ready", "/ping"
         )
 
         override fun matches(request: HttpServletRequest): Boolean {
+            logger.info("Origins: $allowedOrigins")
+
             val path = request.requestURI
             val method = request.method
 
@@ -55,6 +59,8 @@ class SecurityConfig(private val corsProperties: CorsProperties) {
 
             val origin = request.getHeader("Origin")
             val referer = request.getHeader("Referer")
+
+            logger.info("Origin: $origin; Referer: $referer")
 
             return allowedOrigins.any { allowedOrigin ->
                 matchesWildcard(origin, allowedOrigin) || matchesWildcard(referer, allowedOrigin)
