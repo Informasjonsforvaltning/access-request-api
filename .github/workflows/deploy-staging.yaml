@@ -5,6 +5,7 @@ on:
     types: [ready_for_review, opened, reopened, synchronize]
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   dependabot-build:
