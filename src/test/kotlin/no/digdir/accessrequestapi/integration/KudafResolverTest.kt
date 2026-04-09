@@ -1,6 +1,6 @@
 package no.digdir.accessrequestapi.integration
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.json.JsonMapper
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import no.digdir.accessrequestapi.model.DataResourceMetadata
 import no.digdir.accessrequestapi.model.DataResourceType
@@ -9,7 +9,7 @@ import no.digdir.accessrequestapi.model.ShoppingCart
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
@@ -28,7 +28,7 @@ import java.util.*
 class KudafResolverTest {
 
     @Autowired
-    private lateinit var jacksonObjectMapper: ObjectMapper
+    private lateinit var jacksonObjectMapper: JsonMapper
 
     @Autowired
     private lateinit var mockMvc: MockMvc
