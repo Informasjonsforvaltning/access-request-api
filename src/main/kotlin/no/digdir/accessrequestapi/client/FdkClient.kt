@@ -4,7 +4,7 @@ import no.digdir.accessrequestapi.configuration.FdkProperties
 import no.digdir.accessrequestapi.model.DataResourceMetadata
 import org.slf4j.Logger
 import org.springframework.boot.http.client.ClientHttpRequestFactoryBuilder
-import org.springframework.boot.http.client.ClientHttpRequestFactorySettings
+import org.springframework.boot.http.client.HttpClientSettings
 import org.springframework.http.MediaType
 import org.springframework.http.client.ClientHttpRequestFactory
 import org.springframework.stereotype.Component
@@ -13,16 +13,16 @@ import java.time.Duration
 import java.util.*
 
 @Component
-class FdkClient(restClientBuilder: RestClient.Builder, private val fdkProperties: FdkProperties) {
+class FdkClient(private val fdkProperties: FdkProperties) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
-    private val settings: ClientHttpRequestFactorySettings = ClientHttpRequestFactorySettings.defaults()
+    private val settings: HttpClientSettings = HttpClientSettings.defaults()
         .withReadTimeout(Duration.ofSeconds(fdkProperties.timeout))
 
     private val requestFactory: ClientHttpRequestFactory = ClientHttpRequestFactoryBuilder.detect()
         .build(settings)
 
-    private val restClient = restClientBuilder
+    private val restClient = RestClient.builder()
         .baseUrl(fdkProperties.api)
         .requestFactory(requestFactory)
         .build()
