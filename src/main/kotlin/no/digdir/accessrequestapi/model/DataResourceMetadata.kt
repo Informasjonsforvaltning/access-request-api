@@ -33,9 +33,9 @@ data class DataResourceMetadata(
     ) {
         fun get(language: DatasetLanguage): String? =
             when (language) {
-                DatasetLanguage.nn -> nn
-                DatasetLanguage.nb -> nb
-                DatasetLanguage.en -> en
+                DatasetLanguage.NN -> nn
+                DatasetLanguage.NB -> nb
+                DatasetLanguage.EN -> en
             } ?: getBestEffort()
 
         private fun getBestEffort(): String? = en ?: nb ?: nn ?: no
@@ -70,19 +70,20 @@ data class DataResourceMetadata(
             language = language,
         )
 
-    fun isDatasetWithoutDistribution() = type == DataResourceType.datasets && distribution.isNullOrEmpty()
+    fun isDatasetWithoutDistribution() = type == DataResourceType.DATASETS && distribution.isNullOrEmpty()
 }
 
 enum class DataResourceType {
-    datasets,
-    dataservices,
-
+    DATASETS,
+    DATASERVICES,
     ;
+
+    override fun toString() = name.lowercase()
 
     fun toUrlString() =
         when (this) {
-            datasets -> "datasets"
-            dataservices -> "data-services"
+            DATASETS -> "datasets"
+            DATASERVICES -> "data-services"
         }
 }
 

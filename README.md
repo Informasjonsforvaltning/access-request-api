@@ -22,3 +22,12 @@ Clone the repository.
 Run the application in your favorite IDE with the **dev** profile activated (see ```resources/application.yaml```).
 
 Visit ```http://localhost:8080/swagger-ui.html``` for the OpenAPI specification.
+
+### Formatting code
+
+This project uses [ktlint](https://github.com/gantsign/ktlint-maven-plugin) to enforce a consistent code style.
+To automatically fix formatting violations, run:
+
+```sh
+mvn ktlint:format
+```

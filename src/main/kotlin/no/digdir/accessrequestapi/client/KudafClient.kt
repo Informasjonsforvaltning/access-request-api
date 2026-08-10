@@ -12,34 +12,44 @@ import org.springframework.web.client.RestClient
 import java.time.Duration
 
 @Component
-class KudafClient(private val kudafProperties: KudafProperties) {
+class KudafClient(
+    private val kudafProperties: KudafProperties,
+) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
-    private val settings: HttpClientSettings = HttpClientSettings.defaults()
-        .withReadTimeout(Duration.ofSeconds(kudafProperties.timeout))
+    private val settings: HttpClientSettings =
+        HttpClientSettings
+            .defaults()
+            .withReadTimeout(Duration.ofSeconds(kudafProperties.timeout))
 
-    private val requestFactory: ClientHttpRequestFactory = ClientHttpRequestFactoryBuilder.detect()
-        .build(settings)
+    private val requestFactory: ClientHttpRequestFactory =
+        ClientHttpRequestFactoryBuilder
+            .detect()
+            .build(settings)
 
-    private val restClient = RestClient.builder()
-        .baseUrl(kudafProperties.soknadApi)
-        .requestFactory(requestFactory)
-        .build()
+    private val restClient =
+        RestClient
+            .builder()
+            .baseUrl(kudafProperties.soknadApi)
+            .requestFactory(requestFactory)
+            .build()
 
     fun getRedirectUrl(cart: ShoppingCart): String? {
         logger.info("Fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi}")
 
-        return restClient.post()
+        return restClient
+            .post()
             .uri("/cart")
             .accept(MediaType.APPLICATION_JSON)
             .body(cart)
             .retrieve()
             .onStatus({ status -> status.isError }) { _, response ->
                 logger.error("Error fetching redirect URL for cart: $cart from ${kudafProperties.soknadApi} (${response.statusCode})")
-            }
-            .body(KudafAccessRequestResponse::class.java)
+            }.body(KudafAccessRequestResponse::class.java)
             ?.redirectUrl
     }
 }
 
-data class KudafAccessRequestResponse(val redirectUrl: String)
+data class KudafAccessRequestResponse(
+    val redirectUrl: String,
+)

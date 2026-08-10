@@ -23,7 +23,10 @@ data class ShoppingCart(
 }
 
 enum class DatasetLanguage {
-    nn,
-    nb,
-    en,
+    NN,
+    NB,
+    EN,
+    ;
+
+    override fun toString() = name.lowercase()
 }

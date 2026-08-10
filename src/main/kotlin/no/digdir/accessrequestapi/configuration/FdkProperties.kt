@@ -6,5 +6,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class FdkProperties(
     val timeout: Long,
     val api: String,
-    val frontend: String
+    val frontend: String,
 )
