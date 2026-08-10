@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.*
+import java.util.UUID
 
 @Tag(name = "Access request")
 @RestController
@@ -19,7 +19,7 @@ import java.util.*
 class AccessRequestController(
     private val fdkProperties: FdkProperties,
     private val fdkClient: FdkClient,
-    private val kudafClient: KudafClient
+    private val kudafClient: KudafClient,
 ) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
@@ -27,7 +27,7 @@ class AccessRequestController(
     fun createKudafApplication(
         @PathVariable language: DatasetLanguage,
         @PathVariable type: String,
-        @PathVariable id: UUID
+        @PathVariable id: UUID,
     ): ResponseEntity<String> {
         logger.info("Received request to create Kudaf application for type: $type, id: $id, language: $language")
 

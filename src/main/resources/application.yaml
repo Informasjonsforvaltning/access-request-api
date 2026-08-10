@@ -4,6 +4,11 @@ logging:
   level.org.springframework: WARN
   level.org.springframework.web: WARN
 
+spring:
+  jackson:
+    mapper:
+      accept-case-insensitive-enums: true
+
 server:
   port: 8080
 

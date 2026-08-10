@@ -11,11 +11,12 @@ import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 
 @Configuration
-class SecurityConfig(private val corsProperties: CorsProperties) {
-
+class SecurityConfig(
+    private val corsProperties: CorsProperties,
+) {
     @Bean
-    fun filterChain(http: HttpSecurity): SecurityFilterChain {
-        return http
+    fun filterChain(http: HttpSecurity): SecurityFilterChain =
+        http
             .cors { corsConfigurer ->
                 corsConfigurer.configurationSource {
                     CorsConfiguration().also {
@@ -26,19 +27,17 @@ class SecurityConfig(private val corsProperties: CorsProperties) {
                         it.allowedMethods = listOf("GET", "POST", "OPTIONS")
                     }
                 }
-            }
-            .csrf {
-                it.requireCsrfProtectionMatcher(CsrfRequiredMatcher(corsProperties.originPatterns))
+            }.csrf {
+                it
+                    .requireCsrfProtectionMatcher(CsrfRequiredMatcher(corsProperties.originPatterns))
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-            }
-            .sessionManagement {
+            }.sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            }
-            .build()
-    }
+            }.build()
 
-    class CsrfRequiredMatcher(private val allowedOrigins: List<String>) : RequestMatcher {
-
+    class CsrfRequiredMatcher(
+        private val allowedOrigins: List<String>,
+    ) : RequestMatcher {
         override fun matches(request: HttpServletRequest): Boolean {
             val origin = request.getHeader("Origin")
             val referer = request.getHeader("Referer")
@@ -48,13 +47,17 @@ class SecurityConfig(private val corsProperties: CorsProperties) {
             }
         }
 
-        private fun matchesWildcard(url: String?, wildcardPattern: String): Boolean {
+        private fun matchesWildcard(
+            url: String?,
+            wildcardPattern: String,
+        ): Boolean {
             if (url == null) return false
 
-            val regexPattern = wildcardPattern
-                .replace(".", "\\.")
-                .replace("*", ".*")
-                .toRegex()
+            val regexPattern =
+                wildcardPattern
+                    .replace(".", "\\.")
+                    .replace("*", ".*")
+                    .toRegex()
 
             return regexPattern.matches(url)
         }

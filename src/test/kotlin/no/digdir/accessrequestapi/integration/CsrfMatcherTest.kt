@@ -7,13 +7,13 @@ import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
 class CsrfMatcherTest {
-
-    private val allowedOrigins = listOf(
-        "https://staging.fellesdatakatalog.digdir.no",
-        "https://*.staging.fellesdatakatalog.digdir.no",
-        "http://localhost:*",
-        "https://frontend-soknad-staging.paas2.uninett.no"
-    )
+    private val allowedOrigins =
+        listOf(
+            "https://staging.fellesdatakatalog.digdir.no",
+            "https://*.staging.fellesdatakatalog.digdir.no",
+            "http://localhost:*",
+            "https://frontend-soknad-staging.paas2.uninett.no",
+        )
 
     private val matcher = SecurityConfig.CsrfRequiredMatcher(allowedOrigins)
 
