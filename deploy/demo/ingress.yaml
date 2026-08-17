@@ -7,6 +7,12 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-buffering: 'on'
     nginx.ingress.kubernetes.io/proxy-buffers-number: '8'
     nginx.ingress.kubernetes.io/proxy-buffer-size: '32k'
+    nginx.ingress.kubernetes.io/server-snippet: |
+      server_tokens off;
+      location ~ ^/(ping|ready|prometheus) {
+        deny all;
+        return 404;
+      }
 spec:
   ingressClassName: nginx
   rules:

@@ -20,7 +20,7 @@ management:
         info: ping
         health: ready
       exposure:
-        include: health, info
+        include: health, info, prometheus
 
 
 fdk:
