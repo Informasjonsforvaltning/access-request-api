@@ -12,9 +12,7 @@ import org.springframework.web.client.RestClient
 import java.time.Duration
 
 @Component
-class KudafClient(
-    private val kudafProperties: KudafProperties,
-) {
+class KudafClient(private val kudafProperties: KudafProperties) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     private val settings: HttpClientSettings =
@@ -50,6 +48,4 @@ class KudafClient(
     }
 }
 
-data class KudafAccessRequestResponse(
-    val redirectUrl: String,
-)
+data class KudafAccessRequestResponse(val redirectUrl: String)
