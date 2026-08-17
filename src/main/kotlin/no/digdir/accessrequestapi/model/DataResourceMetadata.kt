@@ -21,54 +21,38 @@ data class DataResourceMetadata(
     val distribution: List<Any>?,
     val type: DataResourceType,
 ) {
-    data class ContactPoint(
-        val email: String,
-    )
+    data class ContactPoint(val email: String)
 
-    data class LocalizedStrings(
-        val nb: String?,
-        val nn: String?,
-        val no: String?,
-        val en: String?,
-    ) {
-        fun get(language: DatasetLanguage): String? =
-            when (language) {
-                DatasetLanguage.NN -> nn
-                DatasetLanguage.NB -> nb
-                DatasetLanguage.EN -> en
-            } ?: getBestEffort()
+    data class LocalizedStrings(val nb: String?, val nn: String?, val no: String?, val en: String?) {
+        fun get(language: DatasetLanguage): String? = when (language) {
+            DatasetLanguage.NN -> nn
+            DatasetLanguage.NB -> nb
+            DatasetLanguage.EN -> en
+        } ?: getBestEffort()
 
         private fun getBestEffort(): String? = en ?: nb ?: nn ?: no
     }
 
-    data class Publisher(
-        val id: String,
-    )
+    data class Publisher(val id: String)
 
-    data class AccessRights(
-        val code: AccessRight?,
-    )
+    data class AccessRights(val code: AccessRight?)
 
-    fun toShoppingCart(
-        urlToResource: String,
-        language: DatasetLanguage,
-    ): ShoppingCart =
-        ShoppingCart(
+    fun toShoppingCart(urlToResource: String, language: DatasetLanguage): ShoppingCart = ShoppingCart(
+        orgnr = publisher.id,
+        hintIsPublic = accessRights?.code == AccessRight.PUBLIC,
+        hintIsOrg = urlToResource in HARD_CODED_RESOURCE_ID_IS_ORG_ONLY,
+        hintIsPrePublicationData = isDatasetWithoutDistribution(),
+        dataDef =
+        ShoppingCart.DataDef(
+            urlToResource = urlToResource,
+            type = type,
+            id = id,
+            uri = uri,
             orgnr = publisher.id,
-            hintIsPublic = accessRights?.code == AccessRight.PUBLIC,
-            hintIsOrg = urlToResource in HARD_CODED_RESOURCE_ID_IS_ORG_ONLY,
-            hintIsPrePublicationData = isDatasetWithoutDistribution(),
-            dataDef =
-                ShoppingCart.DataDef(
-                    urlToResource = urlToResource,
-                    type = type,
-                    id = id,
-                    uri = uri,
-                    orgnr = publisher.id,
-                    resourceName = title.get(language) ?: "",
-                ),
-            language = language,
-        )
+            resourceName = title.get(language) ?: "",
+        ),
+        language = language,
+    )
 
     fun isDatasetWithoutDistribution() = type == DataResourceType.DATASETS && distribution.isNullOrEmpty()
 }
@@ -80,11 +64,10 @@ enum class DataResourceType {
 
     override fun toString() = name.lowercase()
 
-    fun toUrlString() =
-        when (this) {
-            DATASETS -> "datasets"
-            DATASERVICES -> "data-services"
-        }
+    fun toUrlString() = when (this) {
+        DATASETS -> "datasets"
+        DATASERVICES -> "data-services"
+    }
 }
 
 enum class AccessRight {

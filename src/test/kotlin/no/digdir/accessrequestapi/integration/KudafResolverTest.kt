@@ -75,10 +75,7 @@ class KudafResolverTest {
         }
     }
 
-    private fun dataDef(
-        id: UUID,
-        type: DataResourceType,
-    ) = ShoppingCart.DataDef(
+    private fun dataDef(id: UUID, type: DataResourceType) = ShoppingCart.DataDef(
         urlToResource = "",
         id = id,
         type = type,
@@ -87,21 +84,18 @@ class KudafResolverTest {
         uri = "http://localhost:6000/datasets/$id",
     )
 
-    private fun dataResourceMetadata(
-        id: UUID,
-        type: DataResourceType,
-    ) = DataResourceMetadata(
+    private fun dataResourceMetadata(id: UUID, type: DataResourceType) = DataResourceMetadata(
         title =
-            DataResourceMetadata.LocalizedStrings(
-                en = "title",
-                nb = null,
-                nn = null,
-                no = null,
-            ),
+        DataResourceMetadata.LocalizedStrings(
+            en = "title",
+            nb = null,
+            nn = null,
+            no = null,
+        ),
         publisher =
-            DataResourceMetadata.Publisher(
-                id = "12345",
-            ),
+        DataResourceMetadata.Publisher(
+            id = "12345",
+        ),
         id = id,
         uri = "http://localhost:6000/datasets/$id",
         type = type,

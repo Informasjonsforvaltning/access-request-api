@@ -13,9 +13,7 @@ import java.time.Duration
 import java.util.UUID
 
 @Component
-class FdkClient(
-    private val fdkProperties: FdkProperties,
-) {
+class FdkClient(private val fdkProperties: FdkProperties) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     private val settings: HttpClientSettings =
@@ -35,10 +33,7 @@ class FdkClient(
             .requestFactory(requestFactory)
             .build()
 
-    fun getMetadata(
-        type: String,
-        id: UUID,
-    ): DataResourceMetadata? {
+    fun getMetadata(type: String, id: UUID): DataResourceMetadata? {
         logger.info("Fetching metadata for type: $type and id: $id from ${fdkProperties.api}")
 
         return restClient

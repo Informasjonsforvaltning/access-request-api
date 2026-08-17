@@ -18,10 +18,7 @@ import java.util.UUID
 @Tag(name = "DataDef resolver")
 @RestController
 @RequestMapping(value = ["/datadef-resolver"], produces = ["application/json"])
-class KudafResolverController(
-    private val fdkClient: FdkClient,
-    private val fdkProperties: FdkProperties,
-) {
+class KudafResolverController(private val fdkClient: FdkClient, private val fdkProperties: FdkProperties) {
     private val logger: Logger = org.slf4j.LoggerFactory.getLogger(this::class.java)
 
     @PostMapping("/{language}")
