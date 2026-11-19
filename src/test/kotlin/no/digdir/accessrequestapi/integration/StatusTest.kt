@@ -26,4 +26,9 @@ class StatusTest {
     fun `ready request returns OK`() {
         mockMvc.get("/ready").andExpect { status { isOk() } }
     }
+
+    @Test
+    fun `unknown path returns not found`() {
+        mockMvc.get("/does-not-exist").andExpect { status { isNotFound() } }
+    }
 }
