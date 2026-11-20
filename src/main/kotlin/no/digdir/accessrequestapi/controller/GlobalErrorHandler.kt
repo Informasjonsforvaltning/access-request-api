@@ -21,8 +21,6 @@ class GlobalErrorHandler {
         else -> ResponseEntity.internalServerError().body(exception.message)
     }
 
-    // Unknown paths raise NoResourceFoundException; without this handler the catch-all below
-    // would answer them with 500. The body is left empty so the request path is not reflected.
     @ExceptionHandler(NoResourceFoundException::class)
     fun handleNoResource(): ResponseEntity<Void> = ResponseEntity.notFound().build()
 
