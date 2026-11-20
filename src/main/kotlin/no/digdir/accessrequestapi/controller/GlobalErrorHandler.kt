@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 @RestControllerAdvice
 class GlobalErrorHandler {
@@ -19,6 +20,9 @@ class GlobalErrorHandler {
         HttpStatus.GATEWAY_TIMEOUT -> ResponseEntity.status(HttpStatus.GATEWAY_TIMEOUT).body(exception.message)
         else -> ResponseEntity.internalServerError().body(exception.message)
     }
+
+    @ExceptionHandler(NoResourceFoundException::class)
+    fun handleNoResource(): ResponseEntity<Void> = ResponseEntity.notFound().build()
 
     @ExceptionHandler(Exception::class)
     fun handleException(exception: Exception): ResponseEntity<String> = ResponseEntity.internalServerError().body(exception.message)
